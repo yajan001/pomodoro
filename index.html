@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pomodoro Timer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@16.14.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.14.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.12.7/babel.min.js"></script>
+    <script type="text/babel">
+      class PomodoroTimer extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            time: 25 * 60, // 25 minutes in seconds
+            isRunning: false,
+          };
+          this.startTimer = this.startTimer.bind(this);
+          this.stopTimer = this.stopTimer.bind(this);
+          this.resetTimer = this.resetTimer.bind(this);
+        }
+
+        startTimer() {
+          this.setState({ isRunning: true });
+          this.timer = setInterval(() => {
+            this.setState((prevState) => ({ time: prevState.time - 1 }));
+          }, 1000);
+        }
+
+        stopTimer() {
+          clearInterval(this.timer);
+          this.setState({ isRunning: false });
+        }
+
+        resetTimer() {
+          this.stopTimer();
+          this.setState({ time: 25 * 60 });
+        }
+
+        render() {
+          const minutes = Math.floor(this.state.time / 60);
+          const seconds = this.state.time % 60;
+          const timeString = `${minutes
+            .toString()
+            .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+          return (
+            <div>
+              <h1>Pomodoro Timer</h1>
+              <div>{timeString}</div>
+              {this.state.isRunning ? (
+                <button onClick={this.stopTimer}>Stop</button>
+              ) : (
+                <button onClick={this.startTimer}>Start</button>
+              )}
+              <button onClick={this.resetTimer}>Reset</button>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<PomodoroTimer />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
